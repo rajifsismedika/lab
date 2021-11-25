@@ -1,0 +1,13 @@
+{
+    "name": "HealthcareBridge",
+    "alias": "healthcarebridge",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\HealthcareBridge\\Providers\\HealthcareBridgeServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": []
+}
