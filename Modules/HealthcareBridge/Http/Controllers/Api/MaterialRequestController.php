@@ -135,8 +135,10 @@ class MaterialRequestController extends Controller
             'unit_conversion' => $validated['KonversiSatuan'],
             'note' => $validated['Catatan'],
         ];
-
-        $materialRequestItem = MaterialRequestItem::create($data);
+        $materialRequestItem = MaterialRequestItem::updateOrCreate([
+            'external_request_id' => $data['external_request_id'],
+            'external_item_id' => $data['external_item_id']
+        ], $data);
 
         return $materialRequestItem;
     }
