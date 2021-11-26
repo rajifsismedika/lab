@@ -189,41 +189,46 @@ class MaterialRequestController extends Controller
 
     public function toRs($kode_rs)
     {
-        $materialRequest = MaterialRequest::where('healthcare_to_id', $kode_rs)->with('items')->firstOrFail();
+        $materialRequests = MaterialRequest::where('healthcare_to_id', $kode_rs)->with('items')->get();
+        $data = [];
 
-        $hisMaterialRequest = [
-            'RequestID' => $materialRequest->external_id,
-            'Tanggal' => $materialRequest->requested_at,
-            'TanggalTerima' => $materialRequest->received_at,
-            'KodeRS' => $materialRequest->healthcare_from_id,
-            'KeKodeRS' => $materialRequest->healthcare_to_id,
-            'DepartemenID' => $materialRequest->department_from_id,
-            'KeDepartemenID' => $materialRequest->department_to_id,
-            'GudangDariDept' => $materialRequest->wh_from_id,
-            'GudangKeDept' => $materialRequest->wh_to_id,
-            'GroupItem' => $materialRequest->group,
-            'DirectExpense' => $materialRequest->is_direct_expense ? 'Y' : 'N',
-            'DisetujuiOleh' => $materialRequest->approved_by,
-            'DisetujuiOleh' => $materialRequest->approved_by_name,
-            'DisetujuiTanggal' => $materialRequest->approved_at,
-            'StatusID' => Helper::statusId($materialRequest->status),
-            'Keterangan' => $materialRequest->note,
-        ];
-
-        foreach ($materialRequest->items as $item) {
-            $hisMaterialRequest['items'][] = [
-                'Request2ID' => $item->external_id,
-                'RequestID' => $item->external_request_id,
-                'ItemID' => $item->external_item_id,
-                'Jumlah' => $item->qty,
-                'JumlahDiterima' => $item->received_qty,
-                'Satuan' => $item->unit,
-                'SatuanDasar' => $item->base_unit,
-                'KonversiSatuan' => $item->unit_conversion,
-                'Catatan' => $item->note,
+        foreach ($materialRequests as $materialRequest) {
+            $hisMaterialRequest = [
+                'RequestID' => $materialRequest->external_id,
+                'Tanggal' => $materialRequest->requested_at,
+                'TanggalTerima' => $materialRequest->received_at,
+                'KodeRS' => $materialRequest->healthcare_from_id,
+                'KeKodeRS' => $materialRequest->healthcare_to_id,
+                'DepartemenID' => $materialRequest->department_from_id,
+                'KeDepartemenID' => $materialRequest->department_to_id,
+                'GudangDariDept' => $materialRequest->wh_from_id,
+                'GudangKeDept' => $materialRequest->wh_to_id,
+                'GroupItem' => $materialRequest->group,
+                'DirectExpense' => $materialRequest->is_direct_expense ? 'Y' : 'N',
+                'DisetujuiOleh' => $materialRequest->approved_by,
+                'DisetujuiOleh' => $materialRequest->approved_by_name,
+                'DisetujuiTanggal' => $materialRequest->approved_at,
+                'StatusID' => Helper::statusId($materialRequest->status),
+                'Keterangan' => $materialRequest->note,
             ];
+    
+            foreach ($materialRequest->items as $item) {
+                $hisMaterialRequest['items'][] = [
+                    'Request2ID' => $item->external_id,
+                    'RequestID' => $item->external_request_id,
+                    'ItemID' => $item->external_item_id,
+                    'Jumlah' => $item->qty,
+                    'JumlahDiterima' => $item->received_qty,
+                    'Satuan' => $item->unit,
+                    'SatuanDasar' => $item->base_unit,
+                    'KonversiSatuan' => $item->unit_conversion,
+                    'Catatan' => $item->note,
+                ];
+            }
+
+            $data[] = $hisMaterialRequest;
         }
 
-        return response($hisMaterialRequest);
+        return response($data);
     }
 }
