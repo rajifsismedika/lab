@@ -22,5 +22,6 @@ Route::middleware(['hisauth'])->group(function () {
     Route::get('material-requests', [MaterialRequestController::class, 'index']);
     Route::post('material-requests', [MaterialRequestController::class, 'store']);
     Route::get('material-requests/{external_id}', [MaterialRequestController::class, 'show']);
+    Route::get('material-requests/to/{kode_rs}', [MaterialRequestController::class, 'toRs']);
     Route::post('material-requests/items', [MaterialRequestController::class, 'storeItem']);
 });
