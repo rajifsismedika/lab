@@ -15,51 +15,20 @@ class MaterialRequestController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    public function index(Request $request)
-    {
-        $validated = $request->validate([
-            'KodeRS' => 'required'
-        ]);
+    // public function index(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'KodeRS' => 'required'
+    //     ]);
 
-        return response($validated);
+    //     $materialRequest = MaterialRequest::where('healthcare_to_id', $validated['KodeRS'])->with('items')->firstOrFail();
+    //     $hisMaterialRequest = $materialRequest->his_format;
+    //     foreach ($materialRequest->items as $item) {
+    //         $hisMaterialRequest['items'][] = $item->his_format;
+    //     }
 
-        $materialRequest = MaterialRequest::where('healthcare_to_id', $validated['KodeRS'])->with('items')->firstOrFail();
-
-        $hisMaterialRequest = [
-            'RequestID' => $materialRequest->external_id,
-            'Tanggal' => $materialRequest->requested_at,
-            'TanggalTerima' => $materialRequest->received_at,
-            'KodeRS' => $materialRequest->healthcare_from_id,
-            'KeKodeRS' => $materialRequest->healthcare_to_id,
-            'DepartemenID' => $materialRequest->department_from_id,
-            'KeDepartemenID' => $materialRequest->department_to_id,
-            'GudangDariDept' => $materialRequest->wh_from_id,
-            'GudangKeDept' => $materialRequest->wh_to_id,
-            'GroupItem' => $materialRequest->group,
-            'DirectExpense' => $materialRequest->is_direct_expense ? 'Y' : 'N',
-            'DisetujuiOleh' => $materialRequest->approved_by,
-            'DisetujuiOleh' => $materialRequest->approved_by_name,
-            'DisetujuiTanggal' => $materialRequest->approved_at,
-            'StatusID' => Helper::statusId($materialRequest->status),
-            'Keterangan' => $materialRequest->note,
-        ];
-
-        foreach ($materialRequest->items as $item) {
-            $hisMaterialRequest['items'][] = [
-                'Request2ID' => $item->external_id,
-                'RequestID' => $item->external_request_id,
-                'ItemID' => $item->external_item_id,
-                'Jumlah' => $item->qty,
-                'JumlahDiterima' => $item->received_qty,
-                'Satuan' => $item->unit,
-                'SatuanDasar' => $item->base_unit,
-                'KonversiSatuan' => $item->unit_conversion,
-                'Catatan' => $item->note,
-            ];
-        }
-
-        return response($hisMaterialRequest);
-    }
+    //     return response($hisMaterialRequest);
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -97,22 +66,6 @@ class MaterialRequestController extends Controller
             'external_id' => $data['external_id'],
         ], $data);
 
-        // foreach ($request->items as $item) {
-        //     $data_item = [
-        //         'external_id' => $validated['Request2ID,
-        //         'external_request_id' => $validated['RequestID,
-        //         'external_item_id' => $validated['ItemID,
-        //         'qty' => $validated['Jumlah,
-        //         'received_qty' => $validated['JumlahDiterima,
-        //         'unit' => $validated['Satuan,
-        //         'base_unit' => $validated['SatuanDasar,
-        //         'unit_conversion' => $validated['KonversiSatuan,
-        //         'note' => $validated['Catatan,
-        //     ];
-
-        //     $materialRequest->items()->create($data_item); // Insert One By One
-        // }
-
         return $materialRequest;
     }
 
@@ -136,6 +89,7 @@ class MaterialRequestController extends Controller
             'note' => $validated['Catatan'],
         ];
         $materialRequestItem = MaterialRequestItem::updateOrCreate([
+            'healthcare_from_id' => $data['KodeRS'],
             'external_request_id' => $data['external_request_id'],
             'external_item_id' => $data['external_item_id']
         ], $data);
@@ -143,88 +97,75 @@ class MaterialRequestController extends Controller
         return $materialRequestItem;
     }
 
+    public function storeItems(Request $request)
+    {
+        // TODO Validation
+        // $validated = $request->validate([
+        //     'RequestID' => 'required',
+        //     'KodeRS' => 'required',
+        // ]);
+        $validated = $request->all();
+
+        if ($validated['items']) {
+            $itemArray = [];
+
+            foreach ($validated['items'] as $item) {
+                $temp = [
+                    'external_id' => $validated['Request2ID'] ?? null,
+                    'external_request_id' => $validated['RequestID'] ?? null,
+                    'external_item_id' => $validated['ItemID'] ?? null,
+                    'qty' => $validated['Jumlah'] ?? null,
+                    'received_qty' => $validated['JumlahDiterima'] ?? null,
+                    'unit' => $validated['Satuan'] ?? null,
+                    'base_unit' => $validated['SatuanDasar'] ?? null,
+                    'unit_conversion' => $validated['KonversiSatuan'] ?? null,
+                    'note' => $validated['Catatan'] ?? null,
+                ];
+
+                $itemArray[] = $temp;
+            }
+
+            $materialRequest = MaterialRequest::where('external_request_id', $validated['RequestID'])
+                ->where('healthcare_from_id', $validated['KodeRS'])
+                ->first();
+            $materialRequest->items()->delete(); // Clear Out Old Items
+            $insertItem = $materialRequest->items()->insert($itemArray);
+
+            return $insertItem;
+        }
+
+        return null;
+    }
+
     /**
      * Show the specified resource.
      * @param int $id
      * @return Renderable
      */
-    public function show($external_id)
-    {
-        $materialRequest = MaterialRequest::where('external_id', $external_id)->with('items')->first();
+    // public function show($external_id)
+    // {
+    //     $materialRequest = MaterialRequest::where('external_id', $external_id)->with('items')->first();
 
-        $hisMaterialRequest = [
-            'RequestID' => $materialRequest->external_id,
-            'Tanggal' => $materialRequest->requested_at,
-            'TanggalTerima' => $materialRequest->received_at,
-            'KodeRS' => $materialRequest->healthcare_from_id,
-            'KeKodeRS' => $materialRequest->healthcare_to_id,
-            'DepartemenID' => $materialRequest->department_from_id,
-            'KeDepartemenID' => $materialRequest->department_to_id,
-            'GudangDariDept' => $materialRequest->wh_from_id,
-            'GudangKeDept' => $materialRequest->wh_to_id,
-            'GroupItem' => $materialRequest->group,
-            'DirectExpense' => $materialRequest->is_direct_expense ? 'Y' : 'N',
-            'DisetujuiOleh' => $materialRequest->approved_by,
-            'DisetujuiOleh' => $materialRequest->approved_by_name,
-            'DisetujuiTanggal' => $materialRequest->approved_at,
-            'StatusID' => Helper::statusId($materialRequest->status),
-            'Keterangan' => $materialRequest->note,
-        ];
+    //     // TODO USE COLLECTION MAP
+    //     $hisMaterialRequest = $materialRequest->his_format;
+    //     foreach ($materialRequest->items as $item) {
+    //         $hisMaterialRequest['items'][] = $item->his_format;
+    //     }
 
-        foreach ($materialRequest->items as $item) {
-            $hisMaterialRequest['items'][] = [
-                'Request2ID' => $item->external_id,
-                'RequestID' => $item->external_request_id,
-                'ItemID' => $item->external_item_id,
-                'Jumlah' => $item->qty,
-                'JumlahDiterima' => $item->received_qty,
-                'Satuan' => $item->unit,
-                'SatuanDasar' => $item->base_unit,
-                'KonversiSatuan' => $item->unit_conversion,
-                'Catatan' => $item->note,
-            ];
-        }
-
-        return response($hisMaterialRequest);
-    }
+    //     return response($hisMaterialRequest);
+    // }
 
     public function toRs($kode_rs)
     {
         $materialRequests = MaterialRequest::where('healthcare_to_id', $kode_rs)->with('items')->get();
-        $data = [];
 
+        // TODO USE COLLECTION MAP
+        $data = [];
         foreach ($materialRequests as $materialRequest) {
-            $hisMaterialRequest = [
-                'RequestID' => $materialRequest->external_id,
-                'Tanggal' => $materialRequest->requested_at,
-                'TanggalTerima' => $materialRequest->received_at,
-                'KodeRS' => $materialRequest->healthcare_from_id,
-                'KeKodeRS' => $materialRequest->healthcare_to_id,
-                'DepartemenID' => $materialRequest->department_from_id,
-                'KeDepartemenID' => $materialRequest->department_to_id,
-                'GudangDariDept' => $materialRequest->wh_from_id,
-                'GudangKeDept' => $materialRequest->wh_to_id,
-                'GroupItem' => $materialRequest->group,
-                'DirectExpense' => $materialRequest->is_direct_expense ? 'Y' : 'N',
-                'DisetujuiOleh' => $materialRequest->approved_by,
-                'DisetujuiOleh' => $materialRequest->approved_by_name,
-                'DisetujuiTanggal' => $materialRequest->approved_at,
-                'StatusID' => Helper::statusId($materialRequest->status),
-                'Keterangan' => $materialRequest->note,
-            ];
+            $hisMaterialRequest = $materialRequest->his_format;
     
             foreach ($materialRequest->items as $item) {
-                $hisMaterialRequest['items'][] = [
-                    'Request2ID' => $item->external_id,
-                    'RequestID' => $item->external_request_id,
-                    'ItemID' => $item->external_item_id,
-                    'Jumlah' => $item->qty,
-                    'JumlahDiterima' => $item->received_qty,
-                    'Satuan' => $item->unit,
-                    'SatuanDasar' => $item->base_unit,
-                    'KonversiSatuan' => $item->unit_conversion,
-                    'Catatan' => $item->note,
-                ];
+                $hisMaterialRequest['items'][] = $item->his_format;
             }
 
             $data[] = $hisMaterialRequest;

@@ -28,6 +28,23 @@ class MaterialRequestItem extends Model
         return \Modules\HealthcareBridge\Database\factories\MaterialRequestItemFactory::new();
     }
 
+    public function getHisFormatAttribute()
+    {
+        $data = [
+            'Request2ID'        => $this->external_id,
+            'RequestID'         => $this->external_request_id,
+            'ItemID'            => $this->external_item_id,
+            'Jumlah'            => $this->qty,
+            'JumlahDiterima'    => $this->received_qty,
+            'Satuan'            => $this->unit,
+            'SatuanDasar'       => $this->base_unit,
+            'KonversiSatuan'    => $this->unit_conversion,
+            'Catatan'           => $this->note,
+        ];
+
+        return $data;
+    }
+
     public function request()
     {
         return $this->belongsTo(MaterialRequest::class, 'external_request_id', 'external_id');

@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Modules\HealthcareBridge\Http\Controllers\Api\MaterialRequestController;
+use Modules\HealthcareBridge\Http\Controllers\MaterialMutationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,9 +20,10 @@ Route::middleware('auth:api')->get('/healthcarebridge', function (Request $reque
 });
 
 Route::middleware(['hisauth'])->group(function () {
-    Route::get('material-requests', [MaterialRequestController::class, 'index']);
+    // Route::get('material-requests', [MaterialRequestController::class, 'index']);
+    // Route::get('material-requests/{external_id}', [MaterialRequestController::class, 'show']);
     Route::post('material-requests', [MaterialRequestController::class, 'store']);
-    Route::get('material-requests/{external_id}', [MaterialRequestController::class, 'show']);
-    Route::any('material-requests/to/{kode_rs}', [MaterialRequestController::class, 'toRs']);
     Route::post('material-requests/items', [MaterialRequestController::class, 'storeItem']);
+    Route::post('material-requests/multi-items', [MaterialRequestController::class, 'storeItems']);
+    Route::post('material-requests/to/{kode_rs}', [MaterialRequestController::class, 'toRs']);
 });
