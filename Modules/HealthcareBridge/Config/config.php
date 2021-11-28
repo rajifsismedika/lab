@@ -2,10 +2,15 @@
 
 return [
     'name' => 'HealthcareBridge',
-    'status' => [
+    'request_status' => [
         0 => 'draft',
         1 => 'kirim',
         2 => 'diterima',
         '-1' => 'ditolak'
-    ]
+    ],
+    'mutasi_status' => [
+        0 => 'draft',
+        1 => 'terkirim',
+        '-1' => 'ditolak'
+    ],
 ];

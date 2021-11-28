@@ -26,4 +26,8 @@ Route::middleware(['hisauth'])->group(function () {
     Route::post('material-requests/items', [MaterialRequestController::class, 'storeItem']);
     Route::post('material-requests/multi-items', [MaterialRequestController::class, 'storeItems']);
     Route::post('material-requests/to/{kode_rs}', [MaterialRequestController::class, 'toRs']);
+
+    Route::post('material-mutations', [MaterialMutationController::class, 'store']);
+    Route::post('material-mutations/multi-items', [MaterialMutationController::class, 'storeItems']);
+    Route::post('material-mutations/to/{kode_rs}', [MaterialMutationController::class, 'toRs']);
 });

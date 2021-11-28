@@ -4,6 +4,7 @@ namespace Modules\HealthcareBridge\Entities;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Modules\HealthcareBridge\Helper\Helper;
 
 class MaterialMutation extends Model
 {
@@ -13,7 +14,6 @@ class MaterialMutation extends Model
         'external_id',
         'external_request_id',
         'send_at',
-        'received_at',
         'healthcare_from_id',
         'healthcare_to_id',
         'department_from_id',
@@ -42,5 +42,27 @@ class MaterialMutation extends Model
     public function request()
     {
         return $this->belongsTo(MaterialRequest::class, 'external_request_id', 'external_id');
+    }
+
+    public function getHisFormatAttribute()
+    {
+        $data = [
+            'MutasiID' => $this->external_id,
+            'RequestID' => $this->external_request_id,
+            'Tanggal' => $this->send_at,
+            'DepartemenID' => $this->department_from_id,
+            'KeDepartemenID' => $this->department_to_id,
+            'GudangID' => $this->wh_from_id,
+            'KeGudangID' => $this->wh_to_id,
+            'JenisMutasiID' => $this->mutation_type == 'kadaluarsa' ? '1' : '0',
+            'Keterangan' => $this->note,
+            'GroupItem' => $this->group,
+            'DirectExpense' => $this->external_id,
+            'StatusID' => Helper::statusMutasiId($this->status),
+            'DisetujuiOleh' => $this->approved_by,
+            'DisetujuiTanggal' => $this->approved_at,
+        ];
+
+        return $data; 
     }
 }

@@ -15,14 +15,14 @@ class CreateBridgeMaterialRequestItemsTable extends Migration
     {
         Schema::create('bridge_material_request_items', function (Blueprint $table) {
             $table->id();
-            $table->string('external_id')->comment('HIS Request2ID');
-            $table->string('external_request_id');
-            $table->string('external_item_id');
-            $table->decimal('qty', 20, 2);
-            $table->decimal('received_qty', 20, 2);
-            $table->string('unit');
-            $table->string('base_unit');
-            $table->decimal('unit_conversion', 20, 2);
+            $table->string('external_id')->nullable()->comment('HIS Request2ID');
+            $table->string('external_request_id')->nullable();
+            $table->string('external_item_id')->nullable();
+            $table->decimal('qty', 20, 2)->nullable();
+            $table->decimal('received_qty', 20, 2)->nullable();
+            $table->string('unit')->nullable();
+            $table->string('base_unit')->nullable();
+            $table->decimal('unit_conversion', 20, 2)->nullable();
             $table->text('note')->nullable();
 
             $table->timestamps();

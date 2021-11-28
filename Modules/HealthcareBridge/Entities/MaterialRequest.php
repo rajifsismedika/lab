@@ -68,7 +68,7 @@ class MaterialRequest extends Model
             'DisetujuiOleh' => $this->approved_by,
             'DisetujuiOleh' => $this->approved_by_name,
             'DisetujuiTanggal' => $this->approved_at,
-            'StatusID' => Helper::statusId($this->status),
+            'StatusID' => Helper::statusRequestId($this->status),
             'Keterangan' => $this->note,
         ];
 

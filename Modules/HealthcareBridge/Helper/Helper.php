@@ -6,14 +6,26 @@ use Illuminate\Support\Facades\Config;
 
 class Helper
 {
-    public static function statusName($status_id) {
-        $status_mapping = Config::get('healthcarebridge.status');
+    public static function statusRequestName($status_id) {
+        $status_mapping = Config::get('healthcarebridge.request_status');
         
         return $status_mapping[$status_id] ?? $status_id;
     }
 
-    public static function statusId($status_name) {
-        $status_mapping = Config::get('healthcarebridge.status');
+    public static function statusRequestId($status_name) {
+        $status_mapping = Config::get('healthcarebridge.request_status');
+
+        return array_search($status_name, $status_mapping);
+    }
+    
+    public static function statusMutasiName($status_id) {
+        $status_mapping = Config::get('healthcarebridge.mutasi_status');
+        
+        return $status_mapping[$status_id] ?? $status_id;
+    }
+
+    public static function statusMutasiId($status_name) {
+        $status_mapping = Config::get('healthcarebridge.mutasi_status');
 
         return array_search($status_name, $status_mapping);
     }

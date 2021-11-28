@@ -58,7 +58,7 @@ class MaterialRequestController extends Controller
             'approved_by' => $validated['DisetujuiOleh'],
             'approved_by_name' => $validated['DisetujuiOleh'],
             'approved_at' => $validated['DisetujuiTanggal'],
-            'status' => Helper::statusName($validated['StatusID']),
+            'status' => Helper::statusRequestName($validated['StatusID']),
             'note' => $validated['Keterangan'],
         ];
         $materialRequest = MaterialRequest::updateOrCreate([
@@ -111,21 +111,21 @@ class MaterialRequestController extends Controller
 
             foreach ($validated['items'] as $item) {
                 $temp = [
-                    'external_id' => $validated['Request2ID'] ?? null,
-                    'external_request_id' => $validated['RequestID'] ?? null,
-                    'external_item_id' => $validated['ItemID'] ?? null,
-                    'qty' => $validated['Jumlah'] ?? null,
-                    'received_qty' => $validated['JumlahDiterima'] ?? null,
-                    'unit' => $validated['Satuan'] ?? null,
-                    'base_unit' => $validated['SatuanDasar'] ?? null,
-                    'unit_conversion' => $validated['KonversiSatuan'] ?? null,
-                    'note' => $validated['Catatan'] ?? null,
+                    'external_id' => $item['Request2ID'] ?? null,
+                    'external_request_id' => $item['RequestID'] ?? null,
+                    'external_item_id' => $item['ItemID'] ?? null,
+                    'qty' => $item['Jumlah'] ?? null,
+                    'received_qty' => $item['JumlahDiterima'] ?? null,
+                    'unit' => $item['Satuan'] ?? null,
+                    'base_unit' => $item['SatuanDasar'] ?? null,
+                    'unit_conversion' => $item['KonversiSatuan'] ?? null,
+                    'note' => $item['Catatan'] ?? null,
                 ];
 
                 $itemArray[] = $temp;
             }
 
-            $materialRequest = MaterialRequest::where('external_request_id', $validated['RequestID'])
+            $materialRequest = MaterialRequest::where('external_id', $validated['RequestID'])
                 ->where('healthcare_from_id', $validated['KodeRS'])
                 ->first();
             $materialRequest->items()->delete(); // Clear Out Old Items
