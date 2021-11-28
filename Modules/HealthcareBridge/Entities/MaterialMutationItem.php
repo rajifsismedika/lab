@@ -9,6 +9,8 @@ class MaterialMutationItem extends Model
 {
     use HasFactory;
 
+    protected $table = 'bridge_material_mutation_items';
+
     protected $fillable = [
         'external_id',
         'external_mutation_id',

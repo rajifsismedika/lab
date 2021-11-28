@@ -82,22 +82,22 @@ class MaterialMutationController extends Controller
 
             foreach ($validated['items'] as $item) {
                 $temp = [
-                    'external_id' => $validated['Mutasi2ID'] ?? null,
-                    'external_mutation_id' => $validated['MutasiID'] ?? null,
-                    'external_request_item_id' => $validated['Request2ID'] ?? null,
-                    'external_item_id' => $validated['ItemID'] ?? null,
-                    'qty' => $validated['Jumlah'] ?? null,
-                    'unit' => $validated['Satuan'] ?? null,
-                    'base_unit' => $validated['SatuanDasar'] ?? null,
-                    'unit_conversion' => $validated['KonversiSatuan'] ?? null,
-                    'cogs' => $validated['COGS'] ?? null,
-                    'note' => $validated['Catatan'] ?? null,
+                    'external_id' => $item['Mutasi2ID'] ?? null,
+                    'external_mutation_id' => $item['MutasiID'] ?? null,
+                    'external_request_item_id' => $item['Request2ID'] ?? null,
+                    'external_item_id' => $item['ItemID'] ?? null,
+                    'qty' => $item['Jumlah'] ?? null,
+                    'unit' => $item['Satuan'] ?? null,
+                    'base_unit' => $item['SatuanDasar'] ?? null,
+                    'unit_conversion' => $item['KonversiSatuan'] ?? null,
+                    'cogs' => $item['COGS'] ?? null,
+                    'note' => $item['Keterangan'] ?? null,
                 ];
 
                 $itemArray[] = $temp;
             }
 
-            $materialMutation = MaterialMutation::where('external_mutation_id', $validated['MutasiID'])
+            $materialMutation = MaterialMutation::where('external_id', $validated['MutasiID'])
                 ->where('healthcare_from_id', $validated['KodeRS'])
                 ->first();
             $materialMutation->items()->delete(); // Clear Out Old Items
