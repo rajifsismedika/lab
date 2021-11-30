@@ -20,12 +20,12 @@ Route::middleware('auth:api')->get('/healthcarebridge', function (Request $reque
 });
 
 Route::middleware(['hisauth'])->group(function () {
-    // Route::get('material-requests', [MaterialRequestController::class, 'index']);
-    // Route::get('material-requests/{external_id}', [MaterialRequestController::class, 'show']);
+    Route::post('material-requests/all', [MaterialRequestController::class, 'index']);
     Route::post('material-requests', [MaterialRequestController::class, 'store']);
     Route::post('material-requests/items', [MaterialRequestController::class, 'storeItem']);
     Route::post('material-requests/multi-items', [MaterialRequestController::class, 'storeItems']);
     Route::post('material-requests/to/{kode_rs}', [MaterialRequestController::class, 'toRs']);
+    Route::post('material-requests/to/{kode_rs}/{external_id}', [MaterialRequestController::class, 'show']);
 
     Route::post('material-mutations', [MaterialMutationController::class, 'store']);
     Route::post('material-mutations/multi-items', [MaterialMutationController::class, 'storeItems']);

@@ -15,20 +15,22 @@ class MaterialRequestController extends Controller
      * Display a listing of the resource.
      * @return Renderable
      */
-    // public function index(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'KodeRS' => 'required'
-    //     ]);
+    public function index(Request $request)
+    {
+        $validated = $request->validate([
+            'KodeRS' => 'required'
+        ]);
 
-    //     $materialRequest = MaterialRequest::where('healthcare_to_id', $validated['KodeRS'])->with('items')->firstOrFail();
-    //     $hisMaterialRequest = $materialRequest->his_format;
-    //     foreach ($materialRequest->items as $item) {
-    //         $hisMaterialRequest['items'][] = $item->his_format;
-    //     }
+        $materialRequest = MaterialRequest::where('healthcare_to_id', $validated['KodeRS'])->with('items')->get();
+        if ($materialRequest) {
+            $hisMaterialRequest = $materialRequest->his_format;
+            foreach ($materialRequest->items as $item) {
+                $hisMaterialRequest['items'][] = $item->his_format;
+            }
+        }
 
-    //     return response($hisMaterialRequest);
-    // }
+        return response($hisMaterialRequest);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -142,33 +144,44 @@ class MaterialRequestController extends Controller
      * @param int $id
      * @return Renderable
      */
-    // public function show($external_id)
-    // {
-    //     $materialRequest = MaterialRequest::where('external_id', $external_id)->with('items')->first();
+    public function show(Request $request, $kode_rs, $external_id)
+    {
+        $materialRequest = MaterialRequest::where('healthcare_to_id', $kode_rs)
+            ->where('external_id', $external_id)
+            ->with('items')
+            ->first();
+        
+        // TODO USE COLLECTION MAP
+        $hisMaterialRequest = $materialRequest->his_format;
+        foreach ($materialRequest->items as $item) {
+            $hisMaterialRequest['items'][] = $item->his_format;
+        }
 
-    //     // TODO USE COLLECTION MAP
-    //     $hisMaterialRequest = $materialRequest->his_format;
-    //     foreach ($materialRequest->items as $item) {
-    //         $hisMaterialRequest['items'][] = $item->his_format;
-    //     }
+        return response($hisMaterialRequest);
+    }
 
-    //     return response($hisMaterialRequest);
-    // }
-
-    public function toRs($kode_rs)
+    public function toRs(Request $request, $kode_rs)
     {
         $materialRequests = MaterialRequest::where('healthcare_to_id', $kode_rs)->with('items')->get();
 
         // TODO USE COLLECTION MAP
-        $data = [];
+        $data = [
+            'page' => 1,
+            'total' => 20,
+            'rows' => [],
+        ];
         foreach ($materialRequests as $materialRequest) {
-            $hisMaterialRequest = $materialRequest->his_format;
-    
-            foreach ($materialRequest->items as $item) {
-                $hisMaterialRequest['items'][] = $item->his_format;
-            }
+            $hisItems = $materialRequest->items->map(function($item) {
+                return $item->his_format;
+            });
 
-            $data[] = $hisMaterialRequest;
+            $flexigridFormat = [
+                'id' => $materialRequest->external_id,
+                'cell' => $materialRequest->his_format,
+                'items' => $hisItems
+            ];
+
+            $data['rows'][] = $flexigridFormat;
         }
 
         return response($data);

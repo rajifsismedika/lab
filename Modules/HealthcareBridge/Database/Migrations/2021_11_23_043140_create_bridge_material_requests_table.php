@@ -16,8 +16,8 @@ class CreateBridgeMaterialRequestsTable extends Migration
         Schema::create('bridge_material_requests', function (Blueprint $table) {
             $table->id();
             $table->string('external_id')->comment('HIS RequestID');
-            $table->dateTime('requested_at');
-            $table->date('received_at')->nullable();
+            $table->date('requested_at');
+            $table->dateTime('received_at')->nullable();
             $table->string('healthcare_from_id')->comment('Healthcare yang meminta material');
             $table->string('healthcare_to_id')->comment('Healthcare yang dimintai material');
             $table->string('department_from_id')->comment('Departement yang meminta material');

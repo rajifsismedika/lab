@@ -66,7 +66,7 @@ class MaterialRequest extends Model
             'GroupItem' => $this->group,
             'DirectExpense' => $this->is_direct_expense ? 'Y' : 'N',
             'DisetujuiOleh' => $this->approved_by,
-            'DisetujuiOleh' => $this->approved_by_name,
+            'DisetujuiOlehNama' => $this->approved_by_name,
             'DisetujuiTanggal' => $this->approved_at,
             'StatusID' => Helper::statusRequestId($this->status),
             'Keterangan' => $this->note,
