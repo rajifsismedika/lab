@@ -29,4 +29,16 @@ class Helper
 
         return array_search($status_name, $status_mapping);
     }
+    
+    public static function statusReceiveName($status_id) {
+        $status_mapping = Config::get('healthcarebridge.receive_status');
+        
+        return $status_mapping[$status_id] ?? $status_id;
+    }
+
+    public static function statusReceiveId($status_name) {
+        $status_mapping = Config::get('healthcarebridge.receive_status');
+
+        return array_search($status_name, $status_mapping);
+    }
 }

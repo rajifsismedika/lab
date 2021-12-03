@@ -1,14 +1,14 @@
 <?php
 
-namespace Modules\HealthcareBridge\Http\Controllers;
+namespace Modules\HealthcareBridge\Http\Controllers\Api;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\HealthcareBridge\Entities\MaterialMutation;
+use Modules\HealthcareBridge\Entities\MaterialRequest;
 use Modules\HealthcareBridge\Helper\Helper;
 
-class MaterialMutationController extends Controller
+class MaterialReceiveController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -42,25 +42,25 @@ class MaterialMutationController extends Controller
         $validated = $request->all();
 
         $data = [
-            'external_id' => $validated['MutasiID'],
+            'external_id' => $validated['ReceiveID'],
             'external_request_id' => $validated['RequestID'],
-            'send_at' => $validated['Tanggal'],
-            'healthcare_from_id' => $validated['KodeRS'],
-            'healthcare_to_id' => $validated['KeKodeRS'],
-            'department_from_id' => $validated['DepartemenID'],
-            'department_to_id' => $validated['KeDepartemenID'],
-            'wh_from_id' => $validated['GudangID'],
-            'wh_to_id' => $validated['KeGudangID'],
-            'group' => $validated['GroupItem'],
-            'mutation_type' => $validated['JenisMutasiID'] == '0' ? 'reguler' : 'kadaluarsa',
-            'is_direct_expense' => $validated['DirectExpense'] == 'N' ? false : true,
+            'external_mutation_id' => $validated['MutationID'],
+            'received_at' => $validated['Tanggal'],
+            'received_from' => $validated['DariNamaRS'],
+            'healthcare_from_id' => $validated['DariKodeRS'],
+            'healthcare_to_id' => $validated['KodeRS'],
+            'department_from_id' => $validated['DariDepartemenID'],
+            'department_to_id' => $validated['DepartemenID'],
+            'wh_from_id' => $validated['DariGudangID'],
+            'wh_to_id' => $validated['GudangID'],
+            'receive_type' => $validated['JenisReceiveID'] == '0' ? 'request' : 'donasi',
             'approved_by' => $validated['DisetujuiOleh'],
             'approved_by_name' => $validated['DisetujuiOleh'],
             'approved_at' => $validated['DisetujuiTanggal'],
-            'status' => Helper::statusMutasiName($validated['StatusID']),
+            'status' => Helper::statusReceiveName($validated['StatusID']),
             'note' => $validated['Keterangan'],
         ];
-        $materialMutation = MaterialMutation::updateOrCreate([
+        $materialMutation = MaterialRequest::updateOrCreate([
             'healthcare_from_id' => $data['healthcare_from_id'],
             'external_id' => $data['external_id'],
         ], $data);
@@ -148,24 +148,5 @@ class MaterialMutationController extends Controller
     public function destroy($id)
     {
         //
-    }
-
-    public function toRs($kode_rs)
-    {
-        $materialMutations = MaterialMutation::where('healthcare_to_id', $kode_rs)->with('items')->get();
-
-        // TODO USE COLLECTION MAP
-        $data = [];
-        foreach ($materialMutations as $materialMutation) {
-            $hisMaterialMutation = $materialMutation->his_format;
-    
-            foreach ($materialMutation->items as $item) {
-                $hisMaterialMutation['items'][] = $item->his_format;
-            }
-
-            $data[] = $hisMaterialMutation;
-        }
-
-        return response($data);
     }
 }

@@ -51,6 +51,16 @@ class MaterialRequest extends Model
         return $this->hasMany(MaterialReceive::class, 'external_request_id', 'external_id');
     }
 
+    public function healthcareFrom()
+    {
+        return $this->hasOne(HisRs::class, 'KodeRS', 'healthcare_from_id');
+    }
+
+    public function healthcareTo()
+    {
+        return $this->hasOne(HisRs::class, 'KodeRS', 'healthcare_to_id');
+    }
+
     public function getHisFormatAttribute()
     {
         $data = [
@@ -59,6 +69,8 @@ class MaterialRequest extends Model
             'TanggalTerima' => $this->received_at,
             'KodeRS' => $this->healthcare_from_id,
             'KeKodeRS' => $this->healthcare_to_id,
+            'KeNamaRS' => $this->healthcareTo->Nama ?? '',
+            'DariNamaRS' => $this->healthcareFrom->Nama ?? '',
             'DepartemenID' => $this->department_from_id,
             'KeDepartemenID' => $this->department_to_id,
             'GudangDariDept' => $this->wh_from_id,

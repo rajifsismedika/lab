@@ -22,7 +22,6 @@ class MaterialReceive extends Model
         'department_to_id',
         'wh_from_id',
         'wh_to_id',
-        'group',
         'approved_by',
         'approved_by_name',
         'approved_at',
@@ -43,5 +42,10 @@ class MaterialReceive extends Model
     public function mutation()
     {
         return $this->belongsTo(MaterialMutation::class, 'external_mutation_id', 'external_id');
+    }
+
+    public function items()
+    {
+        return $this->hasMany(MaterialReceiveItem::class, 'external_receive_id', 'external_id');
     }
 }

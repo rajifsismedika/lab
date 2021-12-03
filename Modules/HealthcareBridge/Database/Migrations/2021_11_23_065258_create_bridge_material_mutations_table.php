@@ -25,6 +25,7 @@ class CreateBridgeMaterialMutationsTable extends Migration
             $table->string('wh_from_id')->nullable()->comment('Gudang yang mengirim material');
             $table->string('wh_to_id')->nullable()->comment('Gudang yang menerima material');
             $table->string('group')->nullable();
+            $table->boolean('is_direct_expense')->nullable();
             $table->string('mutation_type')->nullable();
             $table->string('approved_by')->nullable();
             $table->string('approved_by_name')->nullable();

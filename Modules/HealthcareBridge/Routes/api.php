@@ -1,8 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
+use Modules\HealthcareBridge\Http\Controllers\Api\HealthcareController;
 use Modules\HealthcareBridge\Http\Controllers\Api\MaterialRequestController;
-use Modules\HealthcareBridge\Http\Controllers\MaterialMutationController;
+use Modules\HealthcareBridge\Http\Controllers\Api\MaterialMutationController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,4 +31,10 @@ Route::middleware(['hisauth'])->group(function () {
     Route::post('material-mutations', [MaterialMutationController::class, 'store']);
     Route::post('material-mutations/multi-items', [MaterialMutationController::class, 'storeItems']);
     Route::post('material-mutations/to/{kode_rs}', [MaterialMutationController::class, 'toRs']);
+    Route::post('material-mutations/to/{kode_rs}/{external_id}', [MaterialMutationController::class, 'show']);
+
+    Route::post('material-receives', [MaterialMutationController::class, 'store']);
+    Route::post('material-receives/multi-items', [MaterialMutationController::class, 'storeItems']);
+
+    Route::any('healthcare-list', [HealthcareController::class, 'index']);
 });

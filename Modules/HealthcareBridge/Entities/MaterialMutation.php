@@ -46,6 +46,17 @@ class MaterialMutation extends Model
         return $this->belongsTo(MaterialRequest::class, 'external_request_id', 'external_id');
     }
 
+    public function healthcareFrom()
+    {
+        return $this->hasOne(HisRs::class, 'KodeRS', 'healthcare_from_id');
+    }
+
+    public function healthcareTo()
+    {
+        return $this->hasOne(HisRs::class, 'KodeRS', 'healthcare_to_id');
+    }
+
+
     public function getHisFormatAttribute()
     {
         $data = [
@@ -56,10 +67,12 @@ class MaterialMutation extends Model
             'KeDepartemenID' => $this->department_to_id,
             'GudangID' => $this->wh_from_id,
             'KeGudangID' => $this->wh_to_id,
+            'KeKodeRS' => $this->healthcare_from_id,
+            'KeNamaRS' => $this->healthcareFrom->Nama ?? '',
             'JenisMutasiID' => $this->mutation_type == 'kadaluarsa' ? '1' : '0',
             'Keterangan' => $this->note,
             'GroupItem' => $this->group,
-            'DirectExpense' => $this->external_id,
+            'DirectExpense' => $this->is_direct_expense ? 'Y' : 'N',
             'StatusID' => Helper::statusMutasiId($this->status),
             'DisetujuiOleh' => $this->approved_by,
             'DisetujuiTanggal' => $this->approved_at,
