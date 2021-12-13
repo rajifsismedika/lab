@@ -24,6 +24,7 @@ class CreateBridgeMaterialMutationItemsTable extends Migration
             $table->string('base_unit')->nullable();
             $table->decimal('unit_conversion', 20, 2)->nullable();
             $table->string('cogs', 33, 13)->nullable();
+            $table->date('expiration_date')->nullable();
             $table->text('note')->nullable();
 
             $table->timestamps();

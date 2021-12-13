@@ -86,4 +86,5 @@ class MaterialRequest extends Model
 
         return $data; 
     }
+
 }

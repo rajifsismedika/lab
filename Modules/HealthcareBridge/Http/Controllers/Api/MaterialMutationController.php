@@ -81,6 +81,8 @@ class MaterialMutationController extends Controller
             $itemArray = [];
 
             foreach ($validated['items'] as $item) {
+                $expiration_date = empty($item['TanggalED']) && $item['TanggalED'] != '00-0000' ? implode('-', array_reverse(explode('-', $item['TanggalED']))).'-01' : null;
+                
                 $temp = [
                     'external_id' => $item['Mutasi2ID'] ?? null,
                     'external_mutation_id' => $item['MutasiID'] ?? null,
@@ -91,6 +93,7 @@ class MaterialMutationController extends Controller
                     'base_unit' => $item['SatuanDasar'] ?? null,
                     'unit_conversion' => $item['KonversiSatuan'] ?? null,
                     'cogs' => $item['COGS'] ?? null,
+                    'expiration_date' => $expiration_date,
                     'note' => $item['Keterangan'] ?? null,
                 ];
 

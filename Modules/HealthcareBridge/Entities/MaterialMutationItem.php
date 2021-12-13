@@ -2,6 +2,7 @@
 
 namespace Modules\HealthcareBridge\Entities;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -21,6 +22,7 @@ class MaterialMutationItem extends Model
         'base_unit',
         'unit_conversion',
         'cogs',
+        'expiration_date',
     ];
     
     protected static function newFactory()
@@ -55,6 +57,7 @@ class MaterialMutationItem extends Model
             'SatuanDasar' => $this->base_unit,
             'KonversiSatuan' => $this->unit_conversion,
             'COGS' => $this->cogs,
+            'TanggalED' => !empty($this->expiration_date) ? Carbon::parse($this->expiration_date)->format('m-Y') : '00-0000',
         ];
 
         return $data; 
