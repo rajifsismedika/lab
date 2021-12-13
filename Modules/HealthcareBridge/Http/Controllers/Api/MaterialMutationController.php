@@ -166,7 +166,9 @@ class MaterialMutationController extends Controller
 
     public function toRs(Request $request, $kode_rs)
     {
-        $materialMutations = MaterialMutation::with('items')->where('healthcare_to_id', $kode_rs);
+        $materialMutations = MaterialMutation::with('items')
+            ->where('healthcare_to_id', $kode_rs)
+            ->whereDoesntHave('receives');
         if ($request->has('KeDepartemenID')) {
             $materialMutations->where('department_to_id', $request->KeDepartemenID);
         }

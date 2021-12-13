@@ -162,7 +162,9 @@ class MaterialRequestController extends Controller
 
     public function toRs(Request $request, $kode_rs)
     {
-        $materialRequests = MaterialRequest::where('healthcare_to_id', $kode_rs)->with('items')->get();
+        $materialRequests = MaterialRequest::where('healthcare_to_id', $kode_rs)
+            ->whereDoesntHave('mutations')
+            ->with('items')->get();
 
         // TODO USE COLLECTION MAP
         $data = [

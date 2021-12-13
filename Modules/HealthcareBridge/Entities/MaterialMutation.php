@@ -46,6 +46,11 @@ class MaterialMutation extends Model
         return $this->belongsTo(MaterialRequest::class, 'external_request_id', 'external_id');
     }
 
+    public function receives()
+    {
+        return $this->hasMany(MaterialReceive::class, 'external_mutation_id', 'external_id');
+    }
+
     public function healthcareFrom()
     {
         return $this->hasOne(HisRs::class, 'KodeRS', 'healthcare_from_id');
