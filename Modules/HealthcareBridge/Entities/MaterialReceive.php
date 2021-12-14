@@ -9,6 +9,8 @@ class MaterialReceive extends Model
 {
     use HasFactory;
 
+    protected $table = 'bridge_material_receives';
+
     protected $fillable = [
         'external_id',
         'external_request_id',
