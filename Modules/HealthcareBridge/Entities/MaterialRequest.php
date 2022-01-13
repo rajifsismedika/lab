@@ -66,6 +66,7 @@ class MaterialRequest extends Model
         $data = [
             'RequestID' => $this->external_id,
             'Tanggal' => $this->requested_at,
+            'TanggalBuat' => $this->requested_at,
             'TanggalTerima' => $this->received_at,
             'KodeRS' => $this->healthcare_from_id,
             'KeKodeRS' => $this->healthcare_to_id,
